@@ -1,0 +1,47 @@
+<?php
+    /* @var \Rally\Checkout\Block\Adminhtml\Order\PpoShipping $block */
+
+    $itemId = $block->getItem()->getItemId();
+    $shippingCosts = $block->getShippingCosts();
+?>
+
+<?php if (isset($shippingCosts[$itemId]) && $shippingCosts[$itemId]['subtotal'] > 0) : ?>
+    <?php
+        $shippingCost = $shippingCosts[$itemId];
+        $subtotal = $shippingCost['subtotal'];
+        $tax = $shippingCost['tax_amount'];
+        $total = $shippingCost['total'];
+    ?>
+    </tbody>
+    <tbody>
+        <tr>
+            <td class="col-product" colspan="5">
+                <div id="order_item_<?= $itemId; ?>_cost_title">
+                    <?= $block->escapeHtml(__('Flat shipping rate')); ?>
+                </div>
+            </td>
+            <td class="col-subtotal">
+                <span class="price">
+                    <?= /* @noEscape */ $this->getFormattedPrice($subtotal); ?>
+                </span>
+            </td>
+            <td class="col-tax-amount">
+                <span class="price">
+                    <?= /* @noEscape */ $this->getFormattedPrice($tax); ?>
+                </span>
+            </td>
+            <td class="col-tax-percent">
+                <?= /* @noEscape */ (($tax / $subtotal) * 100) . "%"; ?>
+            </td>
+            <td class="col-discont">
+                <span class="price">
+                    <?= /* @noEscape */ $this->getFormattedPrice(0); ?>
+                </span>
+            </td>
+            <td class="col-total last">
+                <span class="price">
+                    <?= /* @noEscape */ $this->getFormattedPrice($total); ?>
+                </span>
+            </td>
+        </tr>
+<?php endif ?>

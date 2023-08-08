@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/merchants/:orgId/store" method="GET">
+        <service class="Rally\Checkout\Api\StoreConfigManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/shipping-zones" method="GET">
+        <service class="Rally\Checkout\Api\ShippingZonesManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/register/callback" method="POST">
+        <service class="Rally\Checkout\Api\RegisterManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/carts" method="POST">
+        <service class="Rally\Checkout\Api\CartManagerInterface" method="create"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/carts/:externalId/add" method="POST">
+        <service class="Rally\Checkout\Api\CartManagerInterface" method="addItems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/carts/:externalId/remove" method="POST">
+        <service class="Rally\Checkout\Api\CartManagerInterface" method="removeItems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/carts/:externalId" method="POST">
+        <service class="Rally\Checkout\Api\CartManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/carts/:externalId" method="PUT">
+        <service class="Rally\Checkout\Api\CartManagerInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/orders/:externalId" method="GET">
+        <service class="Rally\Checkout\Api\OrderManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/orders/:externalId" method="PUT">
+        <service class="Rally\Checkout\Api\OrderManagerInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/orders" method="POST">
+        <service class="Rally\Checkout\Api\OrderManagerInterface" method="placeOrder"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/products/search" method="POST">
+        <service class="Rally\Checkout\Api\ProductsManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/merchants/:orgId/categories/search" method="POST">
+        <service class="Rally\Checkout\Api\CategoriesManagerInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>

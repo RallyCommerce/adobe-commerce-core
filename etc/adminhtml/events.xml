@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_rally_checkout">
+        <observer name="rally_checkout_config_save" instance="Rally\Checkout\Observer\RallyConfigSaveObserver"/>
+    </event>
+    <event name="admin_system_config_changed_section_general">
+        <observer name="rally_checkout_store_config_save" instance="Rally\Checkout\Observer\StoreConfigSaveObserver"/>
+    </event>
+    <event name="catalog_product_delete_after_done">
+        <observer name="rally_product_delete_webhook" instance="Rally\Checkout\Observer\ProductDeleteAfterObserver" />
+    </event>
+    <event name="catalog_category_delete_after_done">
+        <observer name="rally_category_delete_webhook" instance="Rally\Checkout\Observer\CategoryDeleteAfterObserver" />
+    </event>
+    <event name="catalog_category_save_after">
+        <observer name="rally_category_update_webhook" instance="Rally\Checkout\Observer\CategoryUpdateAfterObserver"/>
+    </event>
+    <event name="catalog_product_save_after">
+        <observer name="rally_product_update_webhook" instance="Rally\Checkout\Observer\ProductUpdateAfterObserver"/>
+    </event>
+</config>

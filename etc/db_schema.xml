@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote" resource="checkout" engine="innodb" comment="Sales Flat Quote">
+        <column xsi:type="text" name="shipping_costs" nullable="true" comment="Rally PPO shipping Costs"/>
+    </table>
+    <table name="sales_order" resource="sales" engine="innodb" comment="Sales Flat Order">
+        <column xsi:type="text" name="shipping_costs" nullable="true" comment="Rally PPO shipping Costs"/>
+        <column xsi:type="text" name="review_transaction" nullable="true" comment="Rally Fraud Review Transaction"/>
+    </table>
+    <table name="quote_item" resource="checkout" engine="innodb" comment="Sales Flat Quote Item">
+        <column xsi:type="smallint" name="is_ppo" unsigned="true" nullable="false" identity="false"
+                default="0" comment="Is PPO item"/>
+    </table>
+    <table name="sales_order_item" resource="sales" engine="innodb" comment="Sales Flat Order Item">
+        <column xsi:type="smallint" name="is_ppo" unsigned="true" nullable="false" identity="false"
+                default="0" comment="Is PPO item"/>
+    </table>
+</schema>

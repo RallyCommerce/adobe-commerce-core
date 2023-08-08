@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
+    <consumer name="rally.product.action.webhook" queue="rally.product.action.webhook"
+              handler="Rally\Checkout\Model\Queue\Product\Consumer::process" />
+    <consumer name="rally.inventory.action.webhook" queue="rally.inventory.action.webhook"
+              handler="Rally\Checkout\Model\Queue\Inventory\Consumer::process" />
+    <consumer name="rally.category.action.webhook" queue="rally.category.action.webhook"
+              handler="Rally\Checkout\Model\Queue\Category\Consumer::process" />
+    <consumer name="rally.order.action.webhook" queue="rally.order.action.webhook"
+              handler="Rally\Checkout\Model\Queue\Order\Consumer::process" />
+    <consumer name="rally.create.customer.action" queue="rally.create.customer.action"
+              handler="Rally\Checkout\Model\Queue\Customer\Consumer::process" />
+    <consumer name="rally.config.action.webhook" queue="rally.config.action.webhook"
+              handler="Rally\Checkout\Model\Queue\Config\Consumer::process" />
+</config>

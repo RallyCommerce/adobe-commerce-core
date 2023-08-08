@@ -1,0 +1,20 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Rally\Checkout\ViewModel\CheckoutConfig $viewModel */
+/** @var \Magento\Framework\Escaper $escaper */
+
+$viewModel = $block->getData('viewModel');
+?>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "checkCustomerCart": {
+                "loadSdk": "<?= /* @noEscape */ $viewModel->isLoadSdk() ? 'true' : 'false' ?>",
+                "checkoutConfig": <?= /* @noEscape */ $viewModel->getConfigData() ?>,
+                "cartId": "<?= $escaper->escapeHtml($viewModel->getQuoteId()) ?>",
+                "sdkUrl": "<?= $escaper->escapeJs($escaper->escapeUrl($viewModel->getSdkUrl())) ?>"
+            }
+        }
+    }
+</script>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento">
+        <binding id="productUpdateBinding" topic="rally.product.action.webhook" destination="rally.product.action.webhook"/>
+        <binding id="inventoryUpdateBinding" topic="rally.inventory.action.webhook" destination="rally.inventory.action.webhook"/>
+        <binding id="categoryUpdateBinding" topic="rally.category.action.webhook" destination="rally.category.action.webhook"/>
+        <binding id="orderActionsBinding" topic="rally.order.action.webhook" destination="rally.order.action.webhook"/>
+        <binding id="customerActionsBinding" topic="rally.create.customer.action" destination="rally.create.customer.action"/>
+        <binding id="configActionsBinding" topic="rally.config.action.webhook" destination="rally.config.action.webhook"/>
+    </exchange>
+</config>

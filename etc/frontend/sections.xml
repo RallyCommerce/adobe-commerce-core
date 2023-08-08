@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+    <action name="checkout/cart/add">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="customer/ajax/login">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="checkout/cart/delete">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="checkout/cart/updatePost">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="checkout/sidebar/removeItem">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="checkout/sidebar/updateItemQty">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/guest-carts/*/shipping-information">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/carts/*/shipping-information">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/guest-carts/*/billing-address">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/carts/*/billing-address">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/guest-carts/*/selected-payment-method">
+        <section name="rally-checkout-config"/>
+    </action>
+    <action name="rest/*/V1/carts/*/selected-payment-method">
+        <section name="rally-checkout-config"/>
+    </action>
+</config>

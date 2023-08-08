@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/publisher.xsd">
+    <publisher topic="rally.product.action.webhook"/>
+    <publisher topic="rally.inventory.action.webhook"/>
+    <publisher topic="rally.category.action.webhook"/>
+    <publisher topic="rally.order.action.webhook"/>
+    <publisher topic="rally.create.customer.action"/>
+    <publisher topic="rally.config.action.webhook"/>
+</config>

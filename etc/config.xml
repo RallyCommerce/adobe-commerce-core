@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <rallypayment>
+                <model>Rally\Checkout\Model\RallyPayment</model>
+                <active>1</active>
+                <title>Rally Checkout Payment</title>
+                <order_status>pending</order_status>
+            </rallypayment>
+        </payment>
+        <rally_checkout>
+            <general>
+                <load_sdk>1</load_sdk>
+            </general>
+        </rally_checkout>
+    </default>
+</config>

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Rally\Checkout\Api\ConfigInterface" type="Rally\Checkout\Model\Config" />
+    <preference for="Rally\Checkout\Api\StoreConfigManagerInterface" type="Rally\Checkout\Model\StoreConfigManager" />
+    <preference for="Rally\Checkout\Api\Data\StoreConfigInterface" type="Rally\Checkout\Model\Data\StoreConfig" />
+    <preference for="Rally\Checkout\Api\ShippingZonesManagerInterface" type="Rally\Checkout\Model\ShippingZonesManager" />
+    <preference for="Rally\Checkout\Api\Data\ShippingZonesDataInterface" type="Rally\Checkout\Model\Data\ShippingZonesData" />
+    <preference for="Rally\Checkout\Api\Data\RegisterDataInterface" type="Rally\Checkout\Model\Data\RegisterData" />
+    <preference for="Rally\Checkout\Api\RegisterManagerInterface" type="Rally\Checkout\Model\RegisterManager" />
+    <preference for="Rally\Checkout\Api\CartManagerInterface" type="Rally\Checkout\Model\CartManager" />
+    <preference for="Rally\Checkout\Api\Data\CartDataInterface" type="Rally\Checkout\Model\Data\CartData" />
+    <preference for="Rally\Checkout\Api\Data\AddressInterface" type="Rally\Checkout\Model\Data\Address" />
+    <preference for="Rally\Checkout\Api\Data\ConsentInterface" type="Rally\Checkout\Model\Data\Consent" />
+    <preference for="Rally\Checkout\Api\Data\AddressInformationInterface" type="Rally\Checkout\Model\Data\AddressInformation" />
+    <preference for="Rally\Checkout\Api\Data\DiscountsInterface" type="Rally\Checkout\Model\Data\Discounts" />
+    <preference for="Rally\Checkout\Api\Data\LineItemsInterface" type="Rally\Checkout\Model\Data\LineItems" />
+    <preference for="Rally\Checkout\Api\Data\LineItemsOptionsInterface" type="Rally\Checkout\Model\Data\LineItemsOptions" />
+    <preference for="Rally\Checkout\Api\Data\CategoriesDataInterface" type="Rally\Checkout\Model\Data\CategoriesData" />
+    <preference for="Rally\Checkout\Api\Data\ShippingLinesDataInterface" type="Rally\Checkout\Model\Data\ShippingLinesData" />
+    <preference for="Rally\Checkout\Api\Data\TaxesDataInterface" type="Rally\Checkout\Model\Data\TaxesData" />
+    <preference for="Rally\Checkout\Api\OrderManagerInterface" type="Rally\Checkout\Model\OrderManager" />
+    <preference for="Rally\Checkout\Api\Data\OrderDataInterface" type="Rally\Checkout\Model\Data\OrderData" />
+    <preference for="Rally\Checkout\Api\Service\RequestValidatorInterface" type="Rally\Checkout\Service\RequestValidator" />
+    <preference for="Rally\Checkout\Api\Service\HmacGeneratorInterface" type="Rally\Checkout\Service\HmacGenerator" />
+    <preference for="Rally\Checkout\Api\Gateway\RequestBuilderInterface" type="Rally\Checkout\Gateway\RequestBuilder" />
+    <preference for="Rally\Checkout\Api\Data\HooksDataInterface" type="Rally\Checkout\Model\Data\HooksData" />
+    <preference for="Rally\Checkout\Api\Service\HookManagerInterface" type="Rally\Checkout\Service\HookManager" />
+    <preference for="Rally\Checkout\Api\Data\PaymentDataInterface" type="Rally\Checkout\Model\Data\PaymentData" />
+    <preference for="Rally\Checkout\Api\CategoriesManagerInterface" type="Rally\Checkout\Model\CategoriesManager" />
+    <preference for="Rally\Checkout\Api\ProductsManagerInterface" type="Rally\Checkout\Model\ProductsManager" />
+    <preference for="Rally\Checkout\Api\Data\ProductsDataInterface" type="Rally\Checkout\Model\Data\ProductsData" />
+    <preference for="Rally\Checkout\Api\Data\ProductImagesDataInterface" type="Rally\Checkout\Model\Data\ProductImagesData" />
+    <preference for="Rally\Checkout\Api\Data\ProductOptionsDataInterface" type="Rally\Checkout\Model\Data\ProductOptionsData" />
+    <preference for="Rally\Checkout\Api\Data\ProductOptionValuesDataInterface" type="Rally\Checkout\Model\Data\ProductOptionValuesData" />
+    <preference for="Rally\Checkout\Api\Data\VariantsPricesDataInterface" type="Rally\Checkout\Model\Data\VariantsPricesData" />
+    <preference for="Rally\Checkout\Api\Data\VariantValuesDataInterface" type="Rally\Checkout\Model\Data\VariantValuesData" />
+    <preference for="Rally\Checkout\Api\Data\ProductVariantsDataInterface" type="Rally\Checkout\Model\Data\ProductVariantsData" />
+    <type name="Rally\Checkout\Service\CartMapper">
+        <arguments>
+            <argument name="cartDataMappers" xsi:type="array">
+                <item name="setCustomer" xsi:type="object">\Rally\Checkout\Service\Cart\CustomerAddressManager</item>
+                <item name="setShippingLines" xsi:type="object">\Rally\Checkout\Service\Cart\ShippingLinesManager</item>
+                <item name="setDiscounts" xsi:type="object">\Rally\Checkout\Service\Cart\DiscountManager</item>
+                <item name="setLineItems" xsi:type="object">\Rally\Checkout\Service\Cart\LineItemsManager</item>
+                <item name="setTaxes" xsi:type="object">\Rally\Checkout\Service\Cart\TaxManager</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Webapi\ServiceOutputProcessor">
+        <plugin name="rally-checkout-webapi-plugin" type="Rally\Checkout\Plugin\ServiceOutputProcessorPlugin" />
+    </type>
+    <type name="Magento\Framework\Webapi\Rest\Response">
+        <plugin name="rally-webapi-response-plugin" type="Rally\Checkout\Plugin\ResponsePlugin" />
+    </type>
+    <type name="Magento\Quote\Model\ChangeQuoteControl">
+        <plugin name="rally-webapi-quote-control-plugin" type="Rally\Checkout\Plugin\ChangeQuoteControlPlugin" />
+    </type>
+    <type name="Magento\Tax\Model\Sales\Total\Quote\CommonTaxCollector">
+        <plugin name="rally-remove-tax-class-id" type="Rally\Checkout\Plugin\CommonTaxCollectorPlugin" sortOrder="10" />
+    </type>
+    <type name="Magento\Quote\Model\Quote\Item">
+        <plugin name="rally-quote-item-plugin" type="Rally\Checkout\Plugin\ItemPlugin" />
+    </type>
+    <type name="Magento\Tax\Model\Config">
+        <plugin name="rally-tax-config-plugin" type="Rally\Checkout\Plugin\TaxConfigPlugin" />
+    </type>
+</config>

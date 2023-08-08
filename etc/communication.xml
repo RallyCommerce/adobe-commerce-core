@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="rally.product.action.webhook" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.product.action.webhook" type="Rally\Checkout\Model\Queue\Product\Consumer" method="process" />
+    </topic>
+    <topic name="rally.inventory.action.webhook" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.inventory.action.webhook" type="Rally\Checkout\Model\Queue\Inventory\Consumer" method="process" />
+    </topic>
+    <topic name="rally.category.action.webhook" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.category.action.webhook" type="Rally\Checkout\Model\Queue\Category\Consumer" method="process" />
+    </topic>
+    <topic name="rally.order.action.webhook" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.order.action.webhook" type="Rally\Checkout\Model\Queue\Order\Consumer" method="process" />
+    </topic>
+    <topic name="rally.create.customer.action" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.create.customer.action" type="Rally\Checkout\Model\Queue\Customer\Consumer" method="process" />
+    </topic>
+    <topic name="rally.config.action.webhook" request="Rally\Checkout\Model\Queue\QueueData">
+        <handler name="rally.config.action.webhook" type="Rally\Checkout\Model\Queue\Config\Consumer" method="process" />
+    </topic>
+</config>

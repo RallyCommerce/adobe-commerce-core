@@ -1,0 +1,21 @@
+{
+    "name": "rally/adobe-commerce-core",
+    "version": "1.0.0",
+    "description": "Rally Checkout Adobe Commerce Extension",
+    "type": "magento2-module",
+    "require": {
+        "php": "~8.1.0||~8.2.0",
+        "magento/framework": "*"
+    },
+    "license": [
+        "OSL-3.0"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Rally\\Checkout\\": ""
+        }
+    }
+}

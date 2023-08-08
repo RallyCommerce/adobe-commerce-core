@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue.xsd">
+    <broker topic="rally.product.action.webhook" exchange="magento">
+        <queue name="rally.product.action.webhook" consumer="rally.product.action.webhook"
+               handler="Rally\Checkout\Model\Queue\Product\Consumer::process"/>
+    </broker>
+    <broker topic="rally.inventory.action.webhook" exchange="magento">
+        <queue name="rally.inventory.action.webhook" consumer="rally.inventory.action.webhook"
+               handler="Rally\Checkout\Model\Queue\Inventory\Consumer::process"/>
+    </broker>
+    <broker topic="rally.category.action.webhook" exchange="magento">
+        <queue name="rally.category.action.webhook" consumer="rally.category.action.webhook"
+               handler="Rally\Checkout\Model\Queue\Category\Consumer::process"/>
+    </broker>
+    <broker topic="rally.order.action.webhook" exchange="magento">
+        <queue name="rally.order.action.webhook" consumer="rally.order.action.webhook"
+               handler="Rally\Checkout\Model\Queue\Order\Consumer::process"/>
+    </broker>
+    <broker topic="rally.create.customer.action" exchange="magento">
+        <queue name="rally.create.customer.action" consumer="rally.create.customer.action"
+               handler="Rally\Checkout\Model\Queue\Customer\Consumer::process"/>
+    </broker>
+    <broker topic="rally.config.action.webhook" exchange="magento">
+        <queue name="rally.config.action.webhook" consumer="rally.config.action.webhook"
+               handler="Rally\Checkout\Model\Queue\Config\Consumer::process"/>
+    </broker>
+</config>
