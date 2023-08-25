@@ -239,7 +239,7 @@ class CartMapper
 
             $parent = $this->productRepository->getById($productId);
 
-            if ($type && !$parent->isSalable()) {
+            if (!$parent->isSalable()) {
                 $this->requestValidator->handleException('out_of_stock');
             }
 

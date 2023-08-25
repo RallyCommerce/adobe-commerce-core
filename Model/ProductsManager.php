@@ -106,9 +106,7 @@ class ProductsManager implements ProductsManagerInterface
     {
         $productData = $this->productDataFactory->create();
         $typeId = $product->getTypeId();
-
-        $store = $this->storeManager->getStore();
-        $storeId = $store->getId();
+        $imageUrl = $this->getProductImageUrl($product);
         $stockItem = $this->stockItemRepository->get($product->getId());
         $productQty = $typeId == ConfigurableType::TYPE_CODE ? 0 : $this->getProductSalableQty($product->getSku());
         $manageStock = $stockItem->getManageStock();
@@ -118,15 +116,6 @@ class ProductsManager implements ProductsManagerInterface
             $management = "variant";
         } elseif (!$manageStock) {
             $management = "bypass";
-        }
-
-        $imageUrl = $product->getData('small_image');
-        if ($imageUrl === null || $imageUrl == 'no_selection') {
-            $this->appEmulation->startEnvironmentEmulation($storeId, Area::AREA_FRONTEND, true);
-            $imageUrl = $this->imageHelper->getDefaultPlaceholderUrl('thumbnail');
-            $this->appEmulation->stopEnvironmentEmulation();
-        } else {
-            $imageUrl = $product->getMediaConfig()->getMediaUrl($imageUrl);
         }
 
         $productData->setOrganizationId($orgId)
@@ -217,6 +206,7 @@ class ProductsManager implements ProductsManagerInterface
      * @param int $position
      * @param array $attributes
      * @return ProductVariantsDataInterface
+     * @throws NoSuchEntityException
      */
     private function getVariantsData(
         Product|ProductInterface $variant,
@@ -259,6 +249,7 @@ class ProductsManager implements ProductsManagerInterface
      *
      * @param Product|ProductInterface $product
      * @return array
+     * @throws NoSuchEntityException
      */
     private function getProductImages(Product|ProductInterface $product): array
     {
@@ -270,6 +261,15 @@ class ProductsManager implements ProductsManagerInterface
             $imageData->setPosition($image->getPosition())
                 ->setSrc($image->getUrl())
                 ->setExternalId($image->getValueId());
+
+            $imagesData[] = $imageData;
+        }
+
+        if (empty($imagesData)) {
+            $imageData = $this->productImgDataFactory->create();
+            $imageData->setPosition(0)
+                ->setSrc($this->getProductImageUrl($product))
+                ->setExternalId($product->getId());
 
             $imagesData[] = $imageData;
         }
@@ -291,5 +291,27 @@ class ProductsManager implements ProductsManagerInterface
             $salableQty = 0;
         }
         return $salableQty;
+    }
+
+    /**
+     * Get product image URL
+     *
+     * @param Product|ProductInterface $product
+     * @return string
+     * @throws NoSuchEntityException
+     */
+    private function getProductImageUrl(Product|ProductInterface $product): string
+    {
+        $store = $this->storeManager->getStore();
+        $storeId = $store->getId();
+        $imageUrl = $product->getData('small_image');
+        if ($imageUrl === null || $imageUrl == 'no_selection') {
+            $this->appEmulation->startEnvironmentEmulation($storeId, Area::AREA_FRONTEND, true);
+            $imageUrl = $this->imageHelper->getDefaultPlaceholderUrl('thumbnail');
+            $this->appEmulation->stopEnvironmentEmulation();
+        } else {
+            $imageUrl = $product->getMediaConfig()->getMediaUrl($imageUrl);
+        }
+        return $imageUrl;
     }
 }
