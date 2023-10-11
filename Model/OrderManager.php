@@ -38,6 +38,7 @@ use Magento\InventorySalesApi\Api\Data\ItemToSellInterfaceFactory;
 use Magento\InventoryCatalogApi\Model\GetSkusByProductIdsInterface;
 use Magento\InventoryCatalogApi\Model\GetProductTypesBySkusInterface;
 use Magento\InventoryConfigurationApi\Model\IsSourceItemManagementAllowedForProductTypeInterface;
+use Rally\Checkout\Api\Data\PaymentDataInterface;
 
 /**
  * Checkout OrderManager model.
@@ -231,6 +232,11 @@ class OrderManager implements OrderManagerInterface
             $this->orderRepository->save($order);
         }
 
+        if (!empty($body['transactions'])) {
+            $paymentData = $this->paymentDataFactory->create();
+            $this->createTransaction($order, $body['transactions'], $paymentData);
+        }
+
         $isFraud  = !empty($body['fraud_review_transaction']);
         if (isset($body['status']) && isset($body['payment_method']) && !$isFraud) {
             $payment = $order->getPayment();
@@ -371,39 +377,8 @@ class OrderManager implements OrderManagerInterface
     private function processOrder(string $orgId, OrderInterface $order, array $rallyOrderData): OrderDataInterface
     {
         $paymentData = $this->paymentDataFactory->create();
-        if ($rallyOrderData['status'] == "paid" && !empty($rallyOrderData['transactions'])) {
-            $payment = $order->getPayment();
-            $payment->setLastTransId($rallyOrderData['transactions'][0]['external_id']);
-            $payment->setTransactionId($rallyOrderData['transactions'][0]['external_id']);
-            $payment->setAdditionalInformation(
-                [Transaction::RAW_DETAILS => (array) $rallyOrderData['transactions'][0]]
-            );
-            $formattedPrice = $order->getBaseCurrency()->formatTxt(
-                $order->getGrandTotal()
-            );
-
-            $message = __('The authorized amount is %1.', $formattedPrice);
-            $transaction = $this->transactionBuilder->setPayment($payment)
-                ->setOrder($order)
-                ->setTransactionId($rallyOrderData['transactions'][0]['external_id'])
-                ->setAdditionalInformation(
-                    [Transaction::RAW_DETAILS => (array) $rallyOrderData['transactions'][0]]
-                )
-                ->setFailSafe(true)
-                ->build(TransactionInterface::TYPE_CAPTURE);
-
-            $payment->addTransactionCommentsToOrder(
-                $transaction,
-                $message
-            );
-            $payment->setParentTransactionId(null);
-            $this->orderPaymentRepository->save($payment);
-            $order->save();
-            $txnId = $this->transactionRepository->save($transaction)->getTransactionId();
-
-            $paymentData = $paymentData
-                ->setExternalPlatformTransactionId($txnId)
-                ->setAmount($rallyOrderData['transactions'][0]['amount']);
+        if (!empty($rallyOrderData['transactions'])) {
+            $paymentData = $this->createTransaction($order, $rallyOrderData['transactions'], $paymentData);
         }
 
         if (isset($rallyOrderData['meta']['autoCreateCustomers']) &&
@@ -427,5 +402,59 @@ class OrderManager implements OrderManagerInterface
         $orderData = $this->get($orgId, $externalId);
         $orderData->setPaymentCreated($paymentData);
         return $orderData;
+    }
+
+    /**
+     * Create rally order transaction
+     *
+     * @param OrderInterface $order
+     * @param array $rallyTransactions
+     * @param PaymentDataInterface $paymentData
+     * @return PaymentDataInterface
+     */
+    private function createTransaction($order, $rallyTransactions, $paymentData)
+    {
+        $payment = $order->getPayment();
+        $txnId = $txnAmount = 0;
+        $orderId = $order->getId();
+        $paymentId = $payment->getEntityId();
+
+        foreach ($rallyTransactions as $rallyTransaction) {
+            $externalId = $rallyTransaction['external_id'];
+            $transaction = $this->transactionRepository->getByTransactionId($externalId, $paymentId, $orderId);
+            if ($transaction && $transaction->getId()) {
+                continue;
+            }
+
+            $payment->setLastTransId($externalId);
+            $payment->setTransactionId($externalId);
+            $payment->setAdditionalInformation(
+                [Transaction::RAW_DETAILS => (array) $rallyTransaction]
+            );
+            $txnAmount = $rallyTransaction['amount'];
+            $formattedPrice = $order->getBaseCurrency()->formatTxt($txnAmount);
+
+            $message = __('The authorized amount is %1.', $formattedPrice);
+            $transaction = $this->transactionBuilder->setPayment($payment)
+                ->setOrder($order)
+                ->setTransactionId($externalId)
+                ->setAdditionalInformation(
+                    [Transaction::RAW_DETAILS => (array) $rallyTransaction]
+                )
+                ->setFailSafe(true)
+                ->build(TransactionInterface::TYPE_CAPTURE);
+
+            $payment->addTransactionCommentsToOrder(
+                $transaction,
+                $message
+            );
+            $payment->setParentTransactionId(null);
+            $this->orderPaymentRepository->save($payment);
+            $order->save();
+            $txnId = $this->transactionRepository->save($transaction)->getTransactionId();
+        }
+        return $paymentData
+            ->setExternalPlatformTransactionId($txnId)
+            ->setAmount($txnAmount);
     }
 }

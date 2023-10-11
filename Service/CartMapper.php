@@ -36,7 +36,7 @@ class CartMapper
         "fraud" => "pending",
         "payment_review" => "pending",
         "holded" => "pending",
-        "canceled" => "pending",
+        "canceled" => "refunded",
         "processing" => "paid",
         "complete" => "completed",
         "closed" => "refunded"

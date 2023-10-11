@@ -56,11 +56,12 @@ class Consumer
 
             if ($orderData->getAction() == 'status') {
                 $url = 'webhooks/order-status-update';
+                $orderStatus = $this->cartMapper->getMappedStatus($order->getStatus());
                 $orderData = [
                     "organization_id" => "",
                     "external_id" => $externalId,
                     "external_number" => $order->getIncrementId(),
-                    "status" => $this->getOrderStatus($order)
+                    "status" => $orderStatus
                 ];
             } elseif ($orderData->getAction() == 'update') {
                 $url = 'webhooks/order-update';
@@ -181,27 +182,5 @@ class Consumer
             "quantity" => 1,
             "amount" => (float) $creditMemo->$method()
         ];
-    }
-
-    /**
-     * Get order status
-     *
-     * @param OrderInterface $order
-     * @return string
-     */
-    private function getOrderStatus(OrderInterface $order): string
-    {
-        $status = 'pending';
-        $hasShipments = $order->hasShipments();
-        $hasInvoices = $order->hasInvoices();
-
-        if ($order->hasCreditmemos()) {
-            $status = 'refunded';
-        } elseif ($hasInvoices && $hasShipments) {
-            $status = 'completed';
-        } elseif ($hasInvoices || $hasShipments) {
-            $status = 'paid';
-        }
-        return $status;
     }
 }

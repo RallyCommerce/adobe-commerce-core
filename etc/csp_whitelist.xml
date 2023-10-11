@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="js_onrally" type="host">js.onrally.com</value>
+                <value id="js_onrally_sandbox" type="host">js.sandbox.onrally.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="api_onrally" type="host">api.onrally.com</value>
+                <value id="api_onrally_sandbox" type="host">api.sandbox.onrally.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
