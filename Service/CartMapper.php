@@ -17,7 +17,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Rally\Checkout\Api\Data\CartDataInterfaceFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Quote\Api\ShippingMethodManagementInterface;
 use Rally\Checkout\Api\Service\RequestValidatorInterface;
 use Magento\Checkout\Api\TotalsInformationManagementInterface;
 use Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory;
@@ -54,7 +53,6 @@ class CartMapper
         public TotalsInformationInterfaceFactory $totalInfoFactory,
         public GetSalableQuantityDataBySku $getSalableQtyDataBySku,
         public TotalsInformationManagementInterface $totalInfoManagement,
-        protected ShippingMethodManagementInterface $shippingManagement,
         public array $cartDataMappers = []
     ) {
     }
@@ -336,10 +334,6 @@ class CartMapper
         }
 
         $this->addProductsToQuote($products, $quote);
-        try {
-            $this->shippingManagement->set($quote->getId(), "", "");
-        } catch (\Exception $e) {
-        }
     }
 
     /**
@@ -368,12 +362,6 @@ class CartMapper
             } elseif ($item) {
                 $item->setQty($item->getQty() - $product['quantity']);
             }
-        }
-
-        try {
-            $this->shippingManagement->set($quote->getId(), "", "");
-        } catch (\Exception $e) {
-            $this->quoteRepository->save($quote->collectTotals());
         }
     }
 
