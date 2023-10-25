@@ -8,16 +8,19 @@ function ($, url, customerData) {
 
     return function(config) {
         const threshold = 5;
-        let checkoutConfig = customerData.get('rally-checkout-config');
+        let checkoutConfig = customerData.get('rally-checkout-config'),
+            cartData = customerData.get('cart');
         window.cartStatusCheck = 1;
 
         if (checkoutConfig() && checkoutConfig().id == config.cartId) {
             window.RallyCheckoutData = checkoutConfig();
+            window.RallyCheckoutData.content = cartData();
         } else {
             window.RallyCheckoutData = config.checkoutConfig;
         }
         checkoutConfig.subscribe(function (config) {
-           window.RallyCheckoutData = config;
+            window.RallyCheckoutData = config;
+            window.RallyCheckoutData.content = cartData();
             if (window.Rally === undefined) {
                 addRallyScript();
             }
