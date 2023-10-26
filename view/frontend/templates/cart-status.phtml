@@ -12,7 +12,6 @@ $viewModel = $block->getData('viewModel');
             "checkCustomerCart": {
                 "loadSdk": "<?= /* @noEscape */ $viewModel->isLoadSdk() ? 'true' : 'false' ?>",
                 "checkoutConfig": <?= /* @noEscape */ $viewModel->getConfigData() ?>,
-                "cartId": "<?= $escaper->escapeHtml($viewModel->getQuoteId()) ?>",
                 "sdkUrl": "<?= $escaper->escapeJs($escaper->escapeUrl($viewModel->getSdkUrl())) ?>"
             }
         }

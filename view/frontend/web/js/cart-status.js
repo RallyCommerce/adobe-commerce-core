@@ -12,7 +12,7 @@ function ($, url, customerData) {
             cartData = customerData.get('cart');
         window.cartStatusCheck = 1;
 
-        if (checkoutConfig() && checkoutConfig().id == config.cartId) {
+        if (checkoutConfig() && checkoutConfig().id) {
             window.RallyCheckoutData = checkoutConfig();
             window.RallyCheckoutData.content = cartData();
         } else {

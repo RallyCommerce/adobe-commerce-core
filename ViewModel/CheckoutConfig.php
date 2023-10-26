@@ -3,10 +3,7 @@
 namespace Rally\Checkout\ViewModel;
 
 use Rally\Checkout\Api\ConfigInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 /**
@@ -16,8 +13,7 @@ class CheckoutConfig implements ArgumentInterface
 {
     public function __construct(
         private readonly ConfigInterface $rallyConfig,
-        private readonly SerializerInterface $serializer,
-        private readonly CheckoutSession $checkoutSession
+        private readonly SerializerInterface $serializer
     ) {
     }
 
@@ -55,26 +51,5 @@ class CheckoutConfig implements ArgumentInterface
     public function getSdkUrl(): string
     {
         return $this->rallyConfig->getSdkUrl();
-    }
-
-    /**
-     * Retrieve customer quote id from session
-     *
-     * @return string
-     */
-    public function getQuoteId(): string
-    {
-        $quoteId = "";
-
-        try {
-            $quote = $this->checkoutSession->getQuote();
-        } catch (NoSuchEntityException|LocalizedException $e) {
-            $quote = null;
-        }
-
-        if ($quote && $quote->getId()) {
-            $quoteId = $this->rallyConfig->getFormattedId("quote", $quote->getId(), $quote->getCreatedAt());
-        }
-        return $quoteId;
     }
 }
