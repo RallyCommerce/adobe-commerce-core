@@ -168,7 +168,7 @@ class LineItemsManager
             $storeCurrencyCode = $cart->getStoreCurrencyCode();
             $cartCurrencyCode = $type == "hook" ? $cart->getQuoteCurrencyCode() : $cart->getOrderCurrencyCode();
 
-            if ($storeCurrencyCode != $cartCurrencyCode) {
+            if ($storeCurrencyCode != $cartCurrencyCode && !$item->getCustomPrice()) {
                 $store = $cart->getStore();
                 $itemPrice = $this->currencyConverter->convertAndRound($itemPrice, $store, $cartCurrencyCode);
                 $finalPrice = $this->currencyConverter->convertAndRound($finalPrice, $store, $cartCurrencyCode);

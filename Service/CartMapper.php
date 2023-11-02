@@ -7,7 +7,6 @@ use Magento\Quote\Api\Data\CartInterface;
 use Rally\Checkout\Api\ConfigInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Quote\Api\Data\TotalsInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Rally\Checkout\Api\Data\CartDataInterface;
 use Magento\Quote\Api\CartManagementInterface;
@@ -43,7 +42,6 @@ class CartMapper
 
     public function __construct(
         public ConfigInterface $rallyConfig,
-        public StoreManagerInterface $storeManager,
         public CartManagementInterface $cartManagement,
         public AddressInterfaceFactory $addressFactory,
         public CartRepositoryInterface $quoteRepository,
@@ -72,15 +70,7 @@ class CartMapper
         try {
             $quoteId = $this->rallyConfig->getId($externalId);
             $quote = $this->quoteRepository->getActive($quoteId);
-            $currentStore = $this->storeManager->getStore();
-            if ($currentStore->getWebsite() != $quote->getStore()->getWebsite()) {
-                $this->requestValidator->handleException('cart_not_found');
-            } elseif ($currentStore->getId() != $quote->getStoreId()) {
-                $this->storeManager->setCurrentStore($quote->getStore());
-                $this->storeManager->getStore()->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            } else {
-                $currentStore->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            }
+            $this->requestValidator->handleMultiStoreCurrency($quote);
         } catch (NoSuchEntityException $exception) {
             $this->requestValidator->handleException('cart_not_found');
         }
@@ -133,15 +123,7 @@ class CartMapper
         try {
             $quoteId = $this->rallyConfig->getId($externalId);
             $quote = $this->quoteRepository->getActive($quoteId);
-            $currentStore = $this->storeManager->getStore();
-            if ($currentStore->getWebsite() != $quote->getStore()->getWebsite()) {
-                $this->requestValidator->handleException('cart_not_found');
-            } elseif ($currentStore->getId() != $quote->getStoreId()) {
-                $this->storeManager->setCurrentStore($quote->getStore());
-                $this->storeManager->getStore()->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            } else {
-                $currentStore->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            }
+            $this->requestValidator->handleMultiStoreCurrency($quote);
         } catch (NoSuchEntityException $exception) {
             $this->requestValidator->handleException('cart_not_found');
         }
@@ -329,7 +311,8 @@ class CartMapper
         try {
             $quoteId = $this->rallyConfig->getId($externalId);
             $quote = $this->quoteRepository->getActive($quoteId);
-        } catch (NoSuchEntityException $exception) {
+            $this->requestValidator->handleMultiStoreCurrency($quote);
+        } catch (Exception|LocalizedException|NoSuchEntityException $e) {
             $this->requestValidator->handleException('cart_not_found');
         }
 
@@ -349,7 +332,8 @@ class CartMapper
         try {
             $quoteId = $this->rallyConfig->getId($externalId);
             $quote = $this->quoteRepository->getActive($quoteId);
-        } catch (NoSuchEntityException $e) {
+            $this->requestValidator->handleMultiStoreCurrency($quote);
+        } catch (Exception|LocalizedException|NoSuchEntityException $e) {
             $this->requestValidator->handleException('cart_not_found');
         }
 

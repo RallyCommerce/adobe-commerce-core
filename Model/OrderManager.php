@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Rally\Checkout\Model;
 
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Webapi\Exception as WebapiException;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Api\Data\TransactionInterface;
@@ -28,7 +29,6 @@ use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Sales\Model\Order;
 use Rally\Checkout\Api\ConfigInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\InventorySales\Model\AppendReservations;
@@ -72,7 +72,6 @@ class OrderManager implements OrderManagerInterface
         public Json $json,
         public EventManager $eventManager,
         public ConfigInterface $rallyConfig,
-        public StoreManagerInterface $storeManager,
         public PriceCurrencyInterface $currencyConverter,
         public ReservationExecutionInterface $reservationExecution,
         public GetSkusByProductIdsInterface $getSkusByProductIds,
@@ -119,7 +118,7 @@ class OrderManager implements OrderManagerInterface
         if (isset($body['line_items']) && !in_array($orderState, [Order::STATE_PROCESSING, Order::STATE_COMPLETE])) {
             $itemPrice = $tax = $subtotal = $total = 0;
             $quote = $this->quoteRepository->get($order->getQuoteId());
-            $this->storeManager->getStore()->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
+            $this->requestValidator->handleMultiStoreCurrency($quote);
             $newItems = $this->cartMapper->addProductsToQuote($body['line_items'], $quote, "ppo");
             $newItemIds = array_map(
                 function ($item) {
@@ -289,15 +288,7 @@ class OrderManager implements OrderManagerInterface
             $externalId = $rallyOrderData['cart']['external_id'];
             $quoteId = $this->rallyConfig->getId($externalId);
             $quote = $this->quoteRepository->get($quoteId);
-            $currentStore = $this->storeManager->getStore();
-            if ($currentStore->getWebsite() != $quote->getStore()->getWebsite()) {
-                $this->requestValidator->handleException('cart_not_found');
-            } elseif ($currentStore->getId() != $quote->getStoreId()) {
-                $this->storeManager->setCurrentStore($quote->getStore());
-                $this->storeManager->getStore()->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            } else {
-                $currentStore->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
-            }
+            $this->requestValidator->handleMultiStoreCurrency($quote);
 
             $itemCount = $quote->getItemsCount();
             $itemQtys = $quote->getItemsQty();
@@ -372,7 +363,7 @@ class OrderManager implements OrderManagerInterface
      * @param OrderInterface $order
      * @param array $rallyOrderData
      * @return OrderDataInterface
-     * @throws WebapiException
+     * @throws WebapiException|InputException
      */
     private function processOrder(string $orgId, OrderInterface $order, array $rallyOrderData): OrderDataInterface
     {
@@ -411,9 +402,13 @@ class OrderManager implements OrderManagerInterface
      * @param array $rallyTransactions
      * @param PaymentDataInterface $paymentData
      * @return PaymentDataInterface
+     * @throws InputException
      */
-    private function createTransaction($order, $rallyTransactions, $paymentData)
-    {
+    private function createTransaction(
+        OrderInterface $order,
+        array $rallyTransactions,
+        PaymentDataInterface $paymentData
+    ): PaymentDataInterface {
         $payment = $order->getPayment();
         $txnId = $txnAmount = 0;
         $orderId = $order->getId();

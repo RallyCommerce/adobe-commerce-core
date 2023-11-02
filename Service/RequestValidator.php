@@ -5,6 +5,8 @@ namespace Rally\Checkout\Service;
 
 use Magento\Framework\Webapi\Rest\Request;
 use Rally\Checkout\Api\ConfigInterface;
+use Magento\Quote\Api\Data\CartInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Webapi\Exception as WebapiException;
 use Rally\Checkout\Api\Service\RequestValidatorInterface;
 use Rally\Checkout\Api\Service\HmacGeneratorInterface;
@@ -23,6 +25,7 @@ class RequestValidator implements RequestValidatorInterface
     public function __construct(
         private readonly Request $request,
         private readonly ConfigInterface $rallyConfig,
+        private readonly StoreManagerInterface $storeManager,
         private readonly HmacGeneratorInterface $hmacGenerator
     ) {
     }
@@ -102,5 +105,22 @@ class RequestValidator implements RequestValidatorInterface
             $code,
             $httpCode
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleMultiStoreCurrency(CartInterface $quote): void
+    {
+        $currentStore = $this->storeManager->getStore();
+
+        if ($currentStore->getWebsiteId() != $quote->getStore()->getWebsiteId()) {
+            $this->handleException('cart_not_found');
+        } elseif ($currentStore->getId() != $quote->getStoreId()) {
+            $this->storeManager->setCurrentStore($quote->getStore());
+            $currentStore->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
+        } else {
+            $currentStore->setCurrentCurrencyCode($quote->getQuoteCurrencyCode());
+        }
     }
 }

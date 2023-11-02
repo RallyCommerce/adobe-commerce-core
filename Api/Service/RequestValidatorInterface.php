@@ -2,6 +2,9 @@
 
 namespace Rally\Checkout\Api\Service;
 
+use Magento\Quote\Api\Data\CartInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Webapi\Exception as WebapiException;
 
 /**
@@ -36,4 +39,15 @@ interface RequestValidatorInterface
      * @throws WebapiException
      */
     public function handleOrderException(string $code, string $message): void;
+
+    /**
+     * Handle multi store and currency
+     *
+     * @param CartInterface $quote
+     * @return void
+     * @throws WebapiException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    public function handleMultiStoreCurrency(CartInterface $quote): void;
 }

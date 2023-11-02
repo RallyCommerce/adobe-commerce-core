@@ -45,6 +45,7 @@ interface OrderManagerInterface
      * @param string $orgId
      * @return OrderDataInterface
      * @throws Exception
+     * @throws LocalizedException
      * @throws CouldNotSaveException
      * @throws NoSuchEntityException
      */
