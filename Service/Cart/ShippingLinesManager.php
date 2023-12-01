@@ -68,7 +68,12 @@ class ShippingLinesManager
         try {
             $region = $shippingAddress->getRegion();
             $isRegionRequired = $this->directoryHelper->isRegionRequired($shippingAddress->getCountryId() ?? "");
-            if ($shippingAddress->getPostcode() && !$quote->getHasCountryError() && !($isRegionRequired && !$region)) {
+            if (
+                $shippingAddress->getPostcode() &&
+                $shippingAddress->getCountryId() &&
+                !$quote->getHasCountryError() &&
+                !($isRegionRequired && !$region)
+            ) {
                 $shippingAddress->setFreeShipping($flag)->setItemQty($itemQty);
                 $rates = $this->rateCollector->collectRatesByAddress($shippingAddress);
                 $shippingList = $rates->getResult()->getAllRates();
@@ -182,7 +187,8 @@ class ShippingLinesManager
 
         if (!empty($rallyCartData['selected_shipping_line_external_id']) &&
             $shippingAddress->getShippingMethod() != $rallyCartData['selected_shipping_line_external_id'] &&
-            $shippingAddress->getPostCode()
+            $shippingAddress->getPostCode() &&
+            $shippingAddress->getCountryId()
         ) {
             $selectedShippingCode = explode("_", $rallyCartData['selected_shipping_line_external_id']);
             $this->shippingMethod->set(

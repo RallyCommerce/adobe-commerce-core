@@ -107,10 +107,15 @@ class ProductsManager implements ProductsManagerInterface
         $productData = $this->productDataFactory->create();
         $typeId = $product->getTypeId();
         $imageUrl = $this->getProductImageUrl($product);
-        $stockItem = $this->stockItemRepository->get($product->getId());
         $productQty = $typeId == ConfigurableType::TYPE_CODE ? 0 : $this->getProductSalableQty($product->getSku());
-        $manageStock = $stockItem->getManageStock();
         $management = "product";
+
+        try {
+            $stockItem = $this->stockItemRepository->get($product->getId());
+            $manageStock = $stockItem->getManageStock();
+        } catch (\Exception $e) {
+            $manageStock = true;
+        }
 
         if ($typeId == ConfigurableType::TYPE_CODE) {
             $management = "variant";
