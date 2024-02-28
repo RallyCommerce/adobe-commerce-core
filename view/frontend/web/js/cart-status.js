@@ -1,7 +1,7 @@
 define([
-    "jquery",
-    "mage/url",
-    "Magento_Customer/js/customer-data"
+    'jquery',
+    'mage/url',
+    'Magento_Customer/js/customer-data'
 ],
 function ($, url, customerData) {
     "use strict";
@@ -9,18 +9,30 @@ function ($, url, customerData) {
     return function(config) {
         const threshold = 5;
         let checkoutConfig = customerData.get('rally-checkout-config'),
-            cartData = customerData.get('cart');
+            cartData = customerData.get('cart'),
+            checkoutData = window.checkoutConfig,
+            path = window.location.pathname;
         window.cartStatusCheck = 1;
 
         if (checkoutConfig() && checkoutConfig().id) {
             window.RallyCheckoutData = checkoutConfig();
             window.RallyCheckoutData.content = cartData();
+
+            if (checkoutData && checkoutData.checkoutUrl.includes(path)) {
+                window.RallyCheckoutData.rallyConfig.product = 'RALLY_OFFERS';
+            }
+
+            document.dispatchEvent(new CustomEvent('rally.platform.initiated'));
         } else {
             window.RallyCheckoutData = config.checkoutConfig;
+            document.dispatchEvent(new CustomEvent('rally.platform.initiated'));
         }
+
+        window.RallyCheckoutData.refresh = reloadCartData;
         checkoutConfig.subscribe(function (config) {
             window.RallyCheckoutData = config;
             window.RallyCheckoutData.content = cartData();
+            window.RallyCheckoutData.refresh = reloadCartData;
             if (window.Rally === undefined) {
                 addRallyScript();
             }
@@ -29,6 +41,9 @@ function ($, url, customerData) {
                     id: window.RallyCheckoutData.id,
                     currency: window.RallyCheckoutData.currency
                 });
+            }
+            if (checkoutData && checkoutData.checkoutUrl.includes(path)) {
+                window.RallyCheckoutData.rallyConfig.product = 'RALLY_OFFERS';
             }
         }.bind(this));
 
@@ -61,6 +76,14 @@ function ($, url, customerData) {
                 var l = document.getElementsByTagName("script")[0];
                 l.parentNode.insertBefore(element, l);
             }
+        }
+
+        function reloadCartData(callback) {
+            let sections = ['cart'];
+            window.reloadCart = true;
+            customerData.reload(sections).done(function () {
+                typeof callback === 'function' && callback();
+            });
         }
 
         $('.customer-address-form .form-address-edit').on('submit', function() {

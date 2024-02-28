@@ -47,6 +47,15 @@
             </argument>
         </arguments>
     </type>
+    <type name="Rally\Checkout\Service\Order\DataManager">
+        <arguments>
+            <argument name="orderDataMappers" xsi:type="array">
+                <item name="setDiscounts" xsi:type="object">\Rally\Checkout\Service\Cart\DiscountManager</item>
+                <item name="setTaxes" xsi:type="object">\Rally\Checkout\Service\Cart\TaxManager</item>
+                <item name="setLineItems" xsi:type="object">\Rally\Checkout\Service\Cart\LineItemsManager</item>
+            </argument>
+        </arguments>
+    </type>
     <type name="Magento\Framework\Webapi\ServiceOutputProcessor">
         <plugin name="rally-checkout-webapi-plugin" type="Rally\Checkout\Plugin\ServiceOutputProcessorPlugin" />
     </type>

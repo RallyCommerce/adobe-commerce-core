@@ -41,17 +41,20 @@ class CustomerAddressManager
     {
         $customerData = $this->addressInfoFactory->create();
         $consentData = $this->consentFactory->create();
-
-        $email = $quote->getCustomerEmail();
+        $shippingAddress = $quote->getShippingAddress();
+        $billingAddress = $quote->getBillingAddress();
+        $email = $quote->getCustomerEmail() ?? $billingAddress->getEmail();
 
         if ($email) {
             $websiteId = $quote->getStore()->getWebsiteId();
             $subscriber = $this->getSubscriptionByEmail($email, $websiteId);
             $consentData->setEmail($subscriber->isSubscribed());
+
+            if (!$quote->getCustomerEmail()) {
+                $quote->setCustomerEmail($email);
+            }
         }
 
-        $shippingAddress = $quote->getShippingAddress();
-        $billingAddress = $quote->getBillingAddress();
         $billingAddressData = $this->getAddressData($billingAddress);
         $shippingAddressData = $this->getAddressData($shippingAddress);
 

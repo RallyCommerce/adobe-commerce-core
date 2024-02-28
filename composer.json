@@ -1,6 +1,6 @@
 {
     "name": "rally/adobe-commerce-core",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Rally Checkout Adobe Commerce Extension",
     "type": "magento2-module",
     "require": {

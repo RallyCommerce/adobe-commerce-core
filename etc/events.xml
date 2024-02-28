@@ -22,6 +22,7 @@
     </event>
     <event name="checkout_submit_all_after">
         <observer name="rally_product_inventory_update_webhook" instance="Rally\Checkout\Observer\InventoryUpdateAfterObserver"/>
+        <observer name="rally_order_create_webhook" instance="Rally\Checkout\Observer\OrderCreateWebhookObserver"/>
     </event>
     <event name="ppo_order_update_after">
         <observer name="rally_product_inventory_update_webhook" instance="Rally\Checkout\Observer\InventoryUpdateAfterObserver"/>

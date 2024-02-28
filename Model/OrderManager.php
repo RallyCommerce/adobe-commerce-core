@@ -39,6 +39,7 @@ use Magento\InventoryCatalogApi\Model\GetSkusByProductIdsInterface;
 use Magento\InventoryCatalogApi\Model\GetProductTypesBySkusInterface;
 use Magento\InventoryConfigurationApi\Model\IsSourceItemManagementAllowedForProductTypeInterface;
 use Rally\Checkout\Api\Data\PaymentDataInterface;
+use Rally\Checkout\Service\Order\DataManager;
 
 /**
  * Checkout OrderManager model.
@@ -78,7 +79,8 @@ class OrderManager implements OrderManagerInterface
         public GetProductTypesBySkusInterface $getProductTypesBySkus,
         public IsSourceItemManagementAllowedForProductTypeInterface $sourceManagement,
         public ItemToSellInterfaceFactory $itemsToSellFactory,
-        public AppendReservations $appendReservations
+        public AppendReservations $appendReservations,
+        public DataManager $orderDataManager
     ) {
     }
 
@@ -87,20 +89,7 @@ class OrderManager implements OrderManagerInterface
      */
     public function get(string $orgId, string $externalId): OrderDataInterface
     {
-        $this->requestValidator->validate();
-        $orderData = $this->orderDataFactory->create();
-        $orderId = $this->rallyConfig->getId($externalId);
-        $order = $this->orderRepository->get($orderId);
-
-        $orderStatus = $this->cartMapper->getMappedStatus($order->getStatus());
-        $orderData->setExternalId($externalId)
-            ->setExternalNumber($order->getIncrementId())
-            ->setStatus($orderStatus)
-            ->setSubtotal((float) $order->getSubtotal())
-            ->setTotal($order->getGrandTotal())
-            ->setTaxAmount((float) $order->getTaxAmount());
-
-        return $orderData;
+        return $this->orderDataManager->getOrderData($externalId);
     }
 
     /**

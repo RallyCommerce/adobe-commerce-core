@@ -27,7 +27,8 @@ class CheckoutConfig implements ArgumentInterface
         $checkoutData["rallyConfig"] = [
             "enabled" => $this->rallyConfig->isEnabled(),
             "sandbox" => $this->rallyConfig->isSandboxMode(),
-            "clientId" => $this->rallyConfig->getClientId()
+            "clientId" => $this->rallyConfig->getClientId(),
+            "product" => 'RALLY_CHECKOUT'
         ];
 
         return $this->serializer->serialize($checkoutData);

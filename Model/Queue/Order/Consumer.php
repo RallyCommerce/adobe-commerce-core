@@ -54,7 +54,16 @@ class Consumer
             $order = $this->orderRepository->get($orderId);
             $externalId = $this->rallyConfig->getFormattedId("order", $order->getId(), $order->getCreatedAt());
 
-            if ($orderData->getAction() == 'status') {
+            if ($orderData->getAction() == 'create') {
+                $cart = $this->quoteRepository->get($order->getQuoteId());
+                $cartId = $this->rallyConfig->getFormattedId('quote', (string) $cart->getId(), $cart->getCreatedAt());
+
+                $url = 'webhooks/order-create';
+                $orderData = [
+                    'external_id' => $externalId,
+                    'cart_id' => $cartId
+                ];
+            } else if ($orderData->getAction() == 'status') {
                 $url = 'webhooks/order-status-update';
                 $orderStatus = $this->cartMapper->getMappedStatus($order->getStatus());
                 $orderData = [

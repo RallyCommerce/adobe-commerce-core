@@ -182,7 +182,8 @@ class CheckoutConfigSection implements SectionSourceInterface
         return [
             "enabled" => $this->rallyConfig->isEnabled(),
             "sandbox" => $this->rallyConfig->isSandboxMode(),
-            "clientId" => $this->rallyConfig->getClientId()
+            "clientId" => $this->rallyConfig->getClientId(),
+            "product" => 'RALLY_CHECKOUT'
         ];
     }
 }

@@ -262,8 +262,10 @@ class ProductsManager implements ProductsManagerInterface
         $imagesData = [];
 
         foreach ($images as $image) {
+            $imgPosition = (int) $image->getPosition();
+            $position = $imgPosition > 0 ? $imgPosition - 1 : $imgPosition;
             $imageData = $this->productImgDataFactory->create();
-            $imageData->setPosition($image->getPosition())
+            $imageData->setPosition($position)
                 ->setSrc($image->getUrl())
                 ->setExternalId($image->getValueId());
 

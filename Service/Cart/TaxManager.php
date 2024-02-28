@@ -50,7 +50,7 @@ class TaxManager
         if ($appliedTaxes) {
             foreach ($appliedTaxes as $appliedTax) {
                 $taxesData = [
-                    "title" => $appliedTax['title'],
+                    "title" => $appliedTax['title'] ?? '',
                     "tax_rate" => (float) ($appliedTax['percent'] / 100),
                     "tax_amount" => (float) $appliedTax['amount'],
                     "meta" => []
