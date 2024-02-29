@@ -22,9 +22,12 @@ class ItemPlugin
         $productOptions = $product->getCustomOptions();
 
         if ($result && isset($productOptions['info_buyRequest'])) {
-            $optionValue = $productOptions['info_buyRequest']->getValue();
+            $option = $productOptions['info_buyRequest']->getValue();
 
-            if (is_string($optionValue) && strpos($optionValue, 'is_ppo') !== false) {
+            if (
+                is_string($option) &&
+                (strpos($option, 'is_ppo') !== false || strpos($option, 'is_order_bump') !== false)
+            ) {
                 $result = false;
             }
         }

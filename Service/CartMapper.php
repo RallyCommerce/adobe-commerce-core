@@ -98,7 +98,8 @@ class CartMapper
         $grandTotal = $cartTotals ? $cartTotals->getGrandTotal() : $quote->getGrandTotal();
         $shippingAmount = $cartTotals ? $cartTotals->getShippingAmount() : $shippingAddress->getShippingAmount();
         $quote->setAppliedRuleIds($appliedRuleIds);
-        $this->quoteRepository->save($quote->setTotalsCollectedFlag(true));
+        $quote->setTotalsCollectedFlag(true);
+        $quote->save();
 
         $cartData->setCurrency($quote->getQuoteCurrencyCode())
             ->setSubtotal((float) $subtotal)
@@ -226,8 +227,10 @@ class CartMapper
             $params = [];
             $params['product'] = $parent->getId();
             $params['qty'] = $product['quantity'];
-            if ($type) {
+            if ($type == 'ppo') {
                 $params['is_ppo'] = true;
+            } elseif ($type == 'order_bump') {
+                $params['is_order_bump'] = true;
             }
 
             if (!empty($variantId) && $productId != $variantId) {
@@ -277,7 +280,7 @@ class CartMapper
                 $quoteItem = null;
             }
 
-            if ($type && $quoteItem && !is_string($quoteItem)) {
+            if ($type == 'ppo' && $quoteItem && !is_string($quoteItem)) {
                 $quoteItem->setNoDiscount(1);
                 $quoteItem->setIsPpo(1);
                 $quoteItem->setCustomPrice($product['price']);
@@ -316,7 +319,7 @@ class CartMapper
             $this->requestValidator->handleException('cart_not_found');
         }
 
-        $this->addProductsToQuote($products, $quote);
+        $this->addProductsToQuote($products, $quote, 'order_bump');
     }
 
     /**
