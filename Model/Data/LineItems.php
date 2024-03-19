@@ -109,17 +109,17 @@ class LineItems extends AbstractExtensibleModel implements LineItemsInterface
     /**
      * {@inheritdoc}
      */
-    public function getExternalSku()
+    public function getSku()
     {
-        return $this->getData(self::KEY_EXTERNAL_SKU);
+        return $this->getData(self::KEY_SKU);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setExternalSku($sku)
+    public function setSku($sku)
     {
-        return $this->setData(self::KEY_EXTERNAL_SKU, $sku);
+        return $this->setData(self::KEY_SKU, $sku);
     }
 
     /**

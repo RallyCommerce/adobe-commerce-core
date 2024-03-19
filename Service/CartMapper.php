@@ -289,6 +289,7 @@ class CartMapper
 
                 $newItems[] = $quoteItem;
             } elseif (!is_string($quoteItem) && isset($product['price'])) {
+                $quoteItem->setNoDiscount(1);
                 $quoteItem->setCustomPrice($product['price']);
                 $quoteItem->setOriginalCustomPrice($product['price']);
                 $quoteItem->getProduct()->setIsSuperMode(true);

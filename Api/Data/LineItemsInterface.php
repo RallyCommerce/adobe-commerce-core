@@ -14,7 +14,7 @@ interface LineItemsInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     public const KEY_QUANTITY = 'quantity';
     public const KEY_TITLE = 'title';
     public const KEY_EXTERNAL_VENDOR = 'external_vendor';
-    public const KEY_EXTERNAL_SKU = 'external_sku';
+    public const KEY_SKU = 'sku';
     public const KEY_IMAGE = 'image';
     public const KEY_INVENTORY_QUANTITY = 'inventory_quantity';
     public const KEY_REQUIRES_SHIPPING = 'requires_shipping';
@@ -123,19 +123,19 @@ interface LineItemsInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     public function setExternalVendor($vendor);
 
     /**
-     * Get external SKU
+     * Get SKU
      *
      * @return string|null
      */
-    public function getExternalSku();
+    public function getSku();
 
     /**
-     * Set external SKU
+     * Set SKU
      *
      * @param string $sku
      * @return $this
      */
-    public function setExternalSku($sku);
+    public function setSku($sku);
 
     /**
      * Get image

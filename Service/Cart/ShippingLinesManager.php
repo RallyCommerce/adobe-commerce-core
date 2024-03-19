@@ -22,6 +22,8 @@ use Magento\Quote\Model\Quote\Address\RateCollectorInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Checkout\Api\Data\ShippingInformationInterface;
 use Magento\Checkout\Api\ShippingInformationManagementInterface;
+use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Quote\Model\Quote\Address\RateRequestFactory;
 
 class ShippingLinesManager
 {
@@ -38,7 +40,8 @@ class ShippingLinesManager
         protected StoreManagerInterface $storeManager,
         protected PriceCurrencyInterface $currencyConverter,
         protected ShippingInformationInterface $shippingInformation,
-        protected ShippingInformationManagementInterface $shippingManagement
+        protected ShippingInformationManagementInterface $shippingManagement,
+        protected RateRequestFactory $rateRequestFactory
     ) {
     }
 
@@ -75,7 +78,8 @@ class ShippingLinesManager
                 !($isRegionRequired && !$region)
             ) {
                 $shippingAddress->setFreeShipping($flag)->setItemQty($itemQty);
-                $rates = $this->rateCollector->collectRatesByAddress($shippingAddress);
+                $request = $this->getRateRequest($shippingAddress);
+                $rates = $this->rateCollector->collectRates($request);
                 $shippingList = $rates->getResult()->getAllRates();
             }
         } catch (\Exception $e) {
@@ -283,5 +287,38 @@ class ShippingLinesManager
             $address,
             $quote->getCustomerTaxClassId()
         );
+    }
+
+    /**
+     * Get rates request
+     *
+     * @param \Magento\Framework\DataObject $address
+     * @param null|array $limitCarrier
+     * @return RateRequest
+     */
+    public function getRateRequest(\Magento\Framework\DataObject $address, $limitCarrier = null)
+    {
+        $request = $this->rateRequestFactory->create();
+        $request->setAllItems($address->getAllItems());
+        $request->setDestCountryId($address->getCountryId());
+        $request->setDestRegionId($address->getRegionId());
+        $request->setDestPostcode($address->getPostcode());
+        $request->setPackageValue($address->getBaseSubtotal());
+        $request->setPackageValueWithDiscount($address->getBaseSubtotalWithDiscount());
+        $request->setPackageWeight($address->getWeight());
+        $request->setFreeMethodWeight($address->getFreeMethodWeight());
+        $request->setPackageQty($address->getItemQty());
+        $request->setFreeShipping($address->getFreeShipping());
+
+        $store = $this->storeManager->getStore();
+        $request->setStoreId($store->getId());
+        $request->setWebsiteId($store->getWebsiteId());
+        $request->setBaseCurrency($store->getBaseCurrency());
+        $request->setPackageCurrency($store->getCurrentCurrency());
+        $request->setLimitCarrier($limitCarrier);
+
+        $request->setBaseSubtotalInclTax($address->getBaseSubtotalInclTax());
+
+        return $request;
     }
 }

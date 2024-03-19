@@ -189,7 +189,7 @@ class LineItemsManager
                     ->setQuantity($item->getQty())
                     ->setTitle($item->getName())
                     ->setExternalVendor("")
-                    ->setExternalSku($item->getSku())
+                    ->setSku($item->getSku())
                     ->setImage($imageUrl)
                     ->setInventoryQuantity($productQty)
                     ->setRequiresShipping($shippingRequired)
@@ -213,7 +213,7 @@ class LineItemsManager
                     "external_variant_id" => $variantId,
                     "title" => $item->getName(),
                     "external_vendor" => "",
-                    "external_sku" => $item->getSku(),
+                    "sku" => $item->getSku(),
                     "image" => $imageUrl,
                     "inventory_quantity" => $productQty,
                     "requires_shipping" => $shippingRequired,

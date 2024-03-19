@@ -13,6 +13,21 @@ function ($, url, customerData) {
             checkoutData = window.checkoutConfig,
             path = window.location.pathname;
         window.cartStatusCheck = 1;
+        window.RallyCheckoutData = config.checkoutConfig;
+
+        if (checkoutData && checkoutData.checkoutUrl.includes(path)) {
+            window.RallyCheckoutData.rallyConfig.product = 'RALLY_OFFERS';
+        }
+
+        function addRallyScript() {
+            if (config.loadSdk) {
+                var element = document.createElement("script");
+                element.src = config.sdkUrl;
+                var l = document.getElementsByTagName("script")[0];
+                l.parentNode.insertBefore(element, l);
+            }
+        }
+        addRallyScript();
 
         if (checkoutConfig() && checkoutConfig().id) {
             window.RallyCheckoutData = checkoutConfig();
@@ -22,9 +37,6 @@ function ($, url, customerData) {
                 window.RallyCheckoutData.rallyConfig.product = 'RALLY_OFFERS';
             }
 
-            document.dispatchEvent(new CustomEvent('rally.platform.initiated'));
-        } else {
-            window.RallyCheckoutData = config.checkoutConfig;
             document.dispatchEvent(new CustomEvent('rally.platform.initiated'));
         }
 
@@ -69,15 +81,6 @@ function ($, url, customerData) {
             }
         }
 
-        function addRallyScript() {
-            if (config.loadSdk) {
-                var element = document.createElement("script");
-                element.src = config.sdkUrl;
-                var l = document.getElementsByTagName("script")[0];
-                l.parentNode.insertBefore(element, l);
-            }
-        }
-
         function reloadCartData(callback) {
             let sections = ['cart'];
             window.reloadCart = true;
@@ -92,6 +95,5 @@ function ($, url, customerData) {
         });
 
         checkCartStatus();
-        addRallyScript();
     }
 });
