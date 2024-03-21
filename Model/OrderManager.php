@@ -31,9 +31,8 @@ use Magento\Sales\Model\Order;
 use Rally\Checkout\Api\ConfigInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Validator\Exception as ValidatorException;
-use Magento\InventorySales\Model\AppendReservations;
+use Rally\Checkout\Model\AppendReservations;
 use Magento\Framework\Event\ManagerInterface as EventManager;
-use Magento\InventorySales\Model\ReservationExecutionInterface;
 use Magento\InventorySalesApi\Api\Data\ItemToSellInterfaceFactory;
 use Magento\InventoryCatalogApi\Model\GetSkusByProductIdsInterface;
 use Magento\InventoryCatalogApi\Model\GetProductTypesBySkusInterface;
@@ -74,7 +73,6 @@ class OrderManager implements OrderManagerInterface
         public EventManager $eventManager,
         public ConfigInterface $rallyConfig,
         public PriceCurrencyInterface $currencyConverter,
-        public ReservationExecutionInterface $reservationExecution,
         public GetSkusByProductIdsInterface $getSkusByProductIds,
         public GetProductTypesBySkusInterface $getProductTypesBySkus,
         public IsSourceItemManagementAllowedForProductTypeInterface $sourceManagement,
